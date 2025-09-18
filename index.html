@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Simple Blockchain + QR</title>
+  <link rel="stylesheet" href="./style.css" />
+  <!-- QR generation (qrcode.js) -->
+  <script src="https://cdn.jsdelivr.net/npm/qrcodejs/qrcode.min.js"></script>
+  <!-- QR scanning (html5-qrcode) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html5-qrcode/2.3.8/html5-qrcode.min.js"></script>
+  <!-- SHA-256 hashing (js-sha256) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/js-sha256/0.11.0/sha256.min.js"></script>
+  <!-- jsQR for decoding captured stills -->
+  <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"></script>
+</head>
+<body>
+  <div class="container">
+    <h1>Verification QR</h1>
+
+    <section class="card">
+      <h2>Add Block</h2>
+      <form id="data-form" autocomplete="off">
+        <!-- Hidden dummy to further discourage autofill -->
+        <input autocomplete="false" name="hidden" type="text" style="display:none">
+        <label>
+          Farmer name
+          <input type="text" id="farmerName" name="farmerName" autocomplete="off" placeholder="e.g., Ramesh Kumar" required />
+        </label>
+        <label>
+          Animal ID
+          <input type="text" id="animalId" name="animalId" autocomplete="off" placeholder="e.g., COW-1023" required />
+        </label>
+        <label>
+          Medicine name
+          <select id="medicineName" name="medicineName" autocomplete="off" required>
+            <option value="" disabled selected>Select medicine</option>
+            <option value="Oxytetracycline">Oxytetracycline</option>
+            <option value="Ivermectin">Ivermectin</option>
+            <option value="Ceftiofur">Ceftiofur</option>
+            <option value="Penicillin G (procaine)">Penicillin G (procaine)</option>
+            <option value="Flunixin meglumine">Flunixin meglumine</option>
+          </select>
+        </label>
+        <label>
+          Dosage
+          <input type="text" id="dosage" name="dosage" autocomplete="off" placeholder="e.g., 10 ml IM bid x3d" required />
+        </label>
+        <label>
+          Date of treatment
+          <input type="date" id="treatDate" name="treatDate" autocomplete="off" required />
+        </label>
+        <label>
+          Withdrawal date
+          <input type="date" id="withdrawDate" name="withdrawDate" autocomplete="off" required />
+        </label>
+        <button type="submit">Add to Chain & Generate QR</button>
+      </form>
+
+      <div class="row" style="margin-top:8px">
+        <button id="generate-url-qr" type="button">Generate URL QR</button>
+      </div>
+
+      <!-- Robust two-column grid to prevent overlap -->
+      <div class="qr-json-grid">
+        <div class="qr-side">
+          <h3>Generated QR</h3>
+          <div id="qr-output" class="qr-quiet-zone"></div>
+          <button id="download-qr" type="button">Download QR</button>
+        </div>
+
+        <div class="json-side">
+          <h3>Latest Block</h3>
+          <div class="code-card">
+            <pre id="latest-block"></pre>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Scan QR</h2>
+      <div id="reader" style="max-width: 520px;"></div>
+
+      <div class="scan-grid">
+        <div class="scan-controls">
+          <button id="toggle-scan">Start/Stop Scanner</button>
+          <button id="capture-frame" type="button">Capture Frame</button>
+          <button id="clear-capture" type="button">Clear Capture</button>
+          <button id="decode-capture" type="button">Decode Captured</button>
+        </div>
+
+        <div class="scan-content">
+          <div>
+            <h3>Scan Result</h3>
+            <pre id="scan-result"></pre>
+          </div>
+          <div>
+            <h3>Parsed Data</h3>
+            <div id="parsed-fields"></div>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-top:8px">
+        <h3>Captured Frame (temporary)</h3>
+        <img id="captured-img" alt="Captured frame preview"/>
+      </div>
+
+      <canvas id="capture-canvas" width="0" height="0" style="display:none"></canvas>
+    </section>
+
+    <section class="card">
+      <h2>Blockchain</h2>
+      <div id="chain-view"></div>
+      <div class="row">
+        <button id="validate-chain">Validate Chain</button>
+        <button id="clear-chain">Clear Chain</button>
+      </div>
+      <pre id="validation-result"></pre>
+    </section>
+  </div>
+
+  <script src="./blockchain.js"></script>
+  <script src="./qr.js"></script>
+  <script src="./app.js"></script>
+</body>
+</html>
